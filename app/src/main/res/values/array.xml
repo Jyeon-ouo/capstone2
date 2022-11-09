@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="otc_reason_array">
+        <item>감기</item>
+        <item>열</item>
+        <item>두통</item>
+        <item>치통</item>
+        <item>복통</item>
+        <item>기타</item>
+    </string-array>
+</resources>

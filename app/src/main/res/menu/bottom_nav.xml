@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/medicine_calendar_fragment"
+        app:showAsAction="ifRoom"
+        android:title="복약달력"
+        android:icon="@drawable/icon_map_white"/>
+
+    <item
+        android:id="@+id/prescription_management_fragment"
+        app:showAsAction="ifRoom"
+        android:title="처방약 관리"
+        android:icon="@drawable/icon_medicine1_white"/>
+
+    <item
+        android:id="@+id/otc_drug_management_fragment"
+        app:showAsAction="ifRoom"
+        android:title="일반의약품 관리"
+        android:icon="@drawable/icon_medicine2_white"/>
+
+    <item
+        android:id="@+id/waste_drug_info_fragment"
+        app:showAsAction="ifRoom"
+        android:title="폐의약품 수거함 위치 안내"
+        android:icon="@drawable/icon_map_white"/>
+</menu>
