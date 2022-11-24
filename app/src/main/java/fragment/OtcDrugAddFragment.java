@@ -1,35 +1,33 @@
 package fragment;
 
+import static android.content.ContentValues.TAG;
+
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.capstone2.MainActivity;
+import com.example.capstone2.MemberInfo;
 import com.example.capstone2.R;
-import com.example.capstone2.databinding.ActivityMainBinding;
 import com.example.capstone2.databinding.FragmentOtcDrugAddBinding;
-import com.example.capstone2.databinding.FragmentOtcDrugManagementBinding;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.example.capstone2.otcDrugInfo;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,17 +40,10 @@ public class OtcDrugAddFragment extends Fragment {
     private String[] otcReasonList;
     private ArrayAdapter<String> adapter;
 
-    EditText otcAddName = view.findViewById(R.id.otc_drug_add_name);
-    Spinner otcAddReason = view.findViewById(R.id.otc_drug_add_reason);
-    TextView otcAddReasonView = view.findViewById(R.id.otc_drug_add_reason_textview);
-    DatePicker otcAddDate = view.findViewById(R.id.otc_drug_add_date);
-    Button otcAddSave = view.findViewById(R.id.otc_drug_add_save);
-    Button otcAddCancel = view.findViewById(R.id.otc_drug_add_cancel);
+    /**
+     * 아래 쪽에 view 생성 이후에 지정하는 것으로 옮김
+     */
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference otcName = database.getReference("일반의약품_의약품명");
-    DatabaseReference otcReason = database.getReference("일반의약품_복용_이유");
-    DatabaseReference otcDate = database.getReference("일반의약품_복용_날짜");
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -92,9 +83,9 @@ public class OtcDrugAddFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        initialize();
-        setAdapter();
-        spinnerSelect();
+//        initialize();
+//        setAdapter();
+//        spinnerSelect();
     }
 
     @SuppressLint("ResourceType")
@@ -103,48 +94,35 @@ public class OtcDrugAddFragment extends Fragment {
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, otcReasonList);
     }
 
-    private void setAdapter(){      //adapter set
-        otcAddReason.setAdapter(adapter);
-    }
-
-    private void spinnerSelect(){
-        otcAddReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
-                otcAddReasonView.setText(otcReasonList[i]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_otc_drug_add, container, false);
 
+        /**
+         * view 가 생긴 다음에 지정을 해야 오류가 나지 않음.
+         */
+        EditText otcAddName = view.findViewById(R.id.otc_drug_add_name);
+        EditText otcAddReason = view.findViewById(R.id.otc_drug_add_reason);
+        EditText otcAddDate = view.findViewById(R.id.otc_drug_add_date);
+        Button otcAddSave = view.findViewById(R.id.otc_drug_add_save);
+        Button otcAddCancel = view.findViewById(R.id.otc_drug_add_cancel);
+
+
         //otcAddName 클릭 시 빈칸으로 바뀜
-        otcAddName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                otcAddName.setText(null);
-            }
-        });
+//        otcAddName.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                otcAddName.setText(null);
+//            }
+//        });
 
         //저장버튼
         otcAddSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //파이어베이스에 의약품명 작성
-                otcName.child("일반의약품_의약품명").setValue(otcAddName.getText().toString());
-
-                //Toast 메시지로 저장이 완료되었다는 것을 알려줌
-                Toast.makeText(getActivity(), "저장되었습니다.", Toast.LENGTH_LONG).show();
-                otcAddName.setText(null);
+                otcDrugUpdate();
             }
         });
 
@@ -155,8 +133,43 @@ public class OtcDrugAddFragment extends Fragment {
 
             }
         });
-
         return view;
+    }
+
+    private void otcDrugUpdate() {
+        String name = ((EditText) view.findViewById(R.id.otc_drug_add_name)).getText().toString();
+        String reason = ((EditText) view.findViewById(R.id.otc_drug_add_reason)).getText().toString();
+        String date = ((EditText) view.findViewById(R.id.otc_drug_add_date)).getText().toString();
+
+        if(name.length() > 0 && reason. length() > 0 && date. length() > 0){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            otcDrugInfo otcDrugInfo = new otcDrugInfo(name,reason,date);
+
+            if(user != null){
+                db.collection("otcDrug").document(user.getUid()).set(otcDrugInfo)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                startToast("일반의약품 정보 등록을 성공하였습니다.");
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                startToast("일반의약품 정보 등록에 실패하였습니다.");
+                                Log.w(TAG, "Error writing document", e);
+                            }
+                        });
+            }
+        }
+        else{
+            startToast("일반의약품 정보를 입력해주세요.");
+        }
+    }
+
+    private void startToast(String msg) {
+        Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
     }
 
     public View viewBinding(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){

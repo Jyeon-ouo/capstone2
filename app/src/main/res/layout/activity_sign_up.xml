@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -56,12 +57,14 @@
             android:id="@+id/signUpButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="회원가입" />
+            android:text="회원가입"
+            tools:ignore="TextContrastCheck" />
 
         <Button
             android:id="@+id/gotologinButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="로그인" />
+            android:text="로그인"
+            tools:ignore="TextContrastCheck" />
     </LinearLayout>
 </LinearLayout>

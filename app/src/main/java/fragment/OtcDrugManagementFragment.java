@@ -108,6 +108,4 @@ public class OtcDrugManagementFragment extends Fragment {
         binding = FragmentOtcDrugManagementBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
-
-
 }

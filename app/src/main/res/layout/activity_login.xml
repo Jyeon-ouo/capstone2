@@ -43,19 +43,23 @@
             android:ems="10"
             android:hint="비밀번호"
             android:inputType="textPassword"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:autofillHints="" />
 
         <Button
             android:id="@+id/checkButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="로그인" />
+            android:text="로그인"
+            android:textColor="@color/white"
+            tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
 
         <Button
             android:id="@+id/gotoPasswordResetButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="비밀번호 재설정" />
+            android:text="비밀번호 재설정"
+            tools:ignore="TextContrastCheck" />
 
     </LinearLayout>
 </LinearLayout>
