@@ -88,6 +88,7 @@ public class OtcDrugAddFragment extends Fragment {
 //        spinnerSelect();
     }
 
+
     @SuppressLint("ResourceType")
     private  void initialize(){     //초기화
         otcReasonList = getResources().getStringArray(R.array.otc_reason_array);
@@ -109,6 +110,7 @@ public class OtcDrugAddFragment extends Fragment {
         Button otcAddSave = view.findViewById(R.id.otc_drug_add_save);
         Button otcAddCancel = view.findViewById(R.id.otc_drug_add_cancel);
 
+        otcAddSave.setOnClickListener(onClickListener);
 
         //otcAddName 클릭 시 빈칸으로 바뀜
 //        otcAddName.setOnClickListener(new View.OnClickListener() {
@@ -119,22 +121,33 @@ public class OtcDrugAddFragment extends Fragment {
 //        });
 
         //저장버튼
-        otcAddSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                otcDrugUpdate();
-            }
-        });
-
-        //취소버튼
-        otcAddCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+//        otcAddSave.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                otcDrugUpdate();
+//            }
+//        });
+//
+//        //취소버튼
+//        otcAddCancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
         return view;
     }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.otc_add_btn:
+                    otcDrugUpdate();
+                    break;
+            }
+        }
+    };
 
     private void otcDrugUpdate() {
         String name = ((EditText) view.findViewById(R.id.otc_drug_add_name)).getText().toString();
@@ -167,6 +180,7 @@ public class OtcDrugAddFragment extends Fragment {
             startToast("일반의약품 정보를 입력해주세요.");
         }
     }
+
 
     private void startToast(String msg) {
         Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();

@@ -116,9 +116,12 @@ public class MainActivity extends AppCompatActivity {
         menu = binding.bottomNav.getMenu();
 
         MedicineCalendarFragment = new MedicineCalendarFragment();
-        //첫화면 -> 여기 아마 손봐야할 것 같은데 감이 안잡혀용,,
+
         getSupportFragmentManager().beginTransaction().replace(R.id.main_frame, MedicineCalendarFragment).commit();
         menu.findItem(R.id.medicine_calendar_fragment).setIcon(R.drawable.icon_calendar);
+
+    HashKey hashKey = new HashKey();
+    hashKey.migrateSignatures(this);
     }
 
     private void bottomNavigationSelect(){

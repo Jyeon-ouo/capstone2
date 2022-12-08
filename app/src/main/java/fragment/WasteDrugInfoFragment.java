@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.capstone2.R;
+import com.example.capstone2.databinding.FragmentWasteDrugInfoBinding;
+
+import net.daum.mf.map.api.MapView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +19,10 @@ import com.example.capstone2.R;
  * create an instance of this fragment.
  */
 public class WasteDrugInfoFragment extends Fragment {
+
+    private FragmentWasteDrugInfoBinding binding;
+
+    View view;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,12 +62,27 @@ public class WasteDrugInfoFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+//        viewBinding();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_waste_drug_info, container, false);
+        View view =  inflater.inflate(R.layout.fragment_waste_drug_info, container, false);
+
+        net.daum.mf.map.api.MapView mapView = new MapView(getActivity());
+        ViewGroup mapViewContainer = (ViewGroup) view.findViewById(R.id.map_view);
+
+        mapViewContainer.addView(mapView);
+
+        return view;
     }
+
+    public View viewBinding(){
+        binding = FragmentWasteDrugInfoBinding.inflate(getLayoutInflater());
+        return binding.getRoot();
+    }
+
 }
