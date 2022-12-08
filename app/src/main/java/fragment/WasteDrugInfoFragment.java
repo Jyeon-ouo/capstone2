@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.example.capstone2.R;
 import com.example.capstone2.databinding.FragmentWasteDrugInfoBinding;
 
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 /**
@@ -76,6 +78,21 @@ public class WasteDrugInfoFragment extends Fragment {
         ViewGroup mapViewContainer = (ViewGroup) view.findViewById(R.id.map_view);
 
         mapViewContainer.addView(mapView);
+
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(36.3382, 127.4458), true);
+
+        mapView.setMapViewEventListener((MapView.MapViewEventListener) getActivity());
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
+
+        MapPOIItem marker1 = new MapPOIItem();
+        MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(36.3365, 127.4471);
+        marker1.setItemName("봄약국");
+        marker1.setTag(0);
+        marker1.setMapPoint(mapPoint);
+        marker1.setMarkerType(MapPOIItem.MarkerType.BluePin); // 기본으로 제공하는 BluePin 마커 모양.
+        marker1.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin); // 마커를 클릭했을때, 기본으로 제공하는 RedPin 마커 모양.
+
+        mapView.addPOIItem(marker1);
 
         return view;
     }
